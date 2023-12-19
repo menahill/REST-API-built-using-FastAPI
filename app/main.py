@@ -69,6 +69,7 @@
 # async def read_user_item(item_id: str, needy: str):
 #     item = {"item_id": item_id, "needy": needy}
 #     return item
+
 from fastapi import FastAPI
 from pydantic import BaseModel
 
@@ -81,7 +82,9 @@ class Item(BaseModel):
 
 
 app = FastAPI()
-
+# @app.get("/items/")
+# async def read_items():
+#     return {"message": "This is a GET endpoint for items."}
 
 @app.post("/items/")
 async def create_item(item: Item):
