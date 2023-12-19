@@ -20,3 +20,17 @@ class User(BaseModel):
     middle_name: Optional[str] = None
     gender: Gender
     roles: List[Role]
+
+class UpdateUser(BaseModel):
+
+    first_name: Optional[str]
+    last_name: Optional[str]
+    middle_name: Optional[str]
+    roles: Optional[List[Role]]
+
+    #update user
+# craete a model
+# first last middle and roles optional
+# create @app.put(path)
+# if any of the feild not none then update the existing field with the new value
+# path variables

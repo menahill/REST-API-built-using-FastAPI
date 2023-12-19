@@ -1,7 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI,HTTPException
 from typing import List
 from uuid import UUID, uuid4
-from app.models import User, Gender, Role
+from app.models import User, Gender, Role, UpdateUser
 
 app = FastAPI()
 db: List[User] = [
@@ -32,6 +32,30 @@ async def fetch_users():
 async def register_user(user: User):
     db.append(user)
     return {"id": user.id}
+
+@app.delete("/api/v1/users/{user_id}")
+async def delete_user(user_id: UUID):
+    for user in db:  # loop through users in db
+        if user.id == user_id:
+            db.remove(user)
+            return {"message": "User deleted successfully"}
+    raise HTTPException(
+        status_code=404,
+        detail="User not found")
+
+@app.put("/api/v1/users/{user_id}")
+async def update_user(user_id: UUID, update_user: UpdateUser):
+    for user in db:  # loop through users in db
+        if user.id == user_id:
+            user.first_name = update_user.first_name or user.first_name
+            user.last_name = update_user.last_name or user.last_name
+            user.middle_name = update_user.middle_name or user.middle_name
+            user.roles = update_user.roles or user.roles
+        return {"message": "User updated successfully"}
+    raise HTTPException(
+        status_code=404,
+        detail="User not found")
+
 
 # # @app.get("/items/{item_id}")
 # # def read_item(item_id: int, q: Union[str, None] = None):
