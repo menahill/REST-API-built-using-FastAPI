@@ -1,11 +1,38 @@
-# from fastapi import FastAPI
-# from typing import Union
+from fastapi import FastAPI
+from typing import List
+from uuid import UUID, uuid4
+from app.models import User, Gender, Role
 
-# app = FastAPI()
-# @app.get("/")
+app = FastAPI()
+db: List[User] = [
+    User(
+        id = uuid4(),
+        first_name  = "John",
+        last_name = "Doe",
+        gender = Gender.female,
+        roles = [Role.student]
+    ),
+    User(
+        id = uuid4(),
+        first_name  = " kane",
+        last_name = " bow",
+        gender = Gender.male,
+        roles = [Role.admin, Role.user]
+    )
+]
 
-# def root():
-#     return {"message": "Hello World!"}
+@app.get("/")
+async def root():
+    return {"message": "Hello World!"}
+
+@app.get("/api/v1/users")
+async def fetch_users():
+    return db
+@app.post("/api/v1/users")
+async def register_user(user: User):
+    db.append(user)
+    return {"id": user.id}
+
 # # @app.get("/items/{item_id}")
 # # def read_item(item_id: int, q: Union[str, None] = None):
 # #     return {"item_id": item_id, "q": q}
@@ -70,24 +97,24 @@
 #     item = {"item_id": item_id, "needy": needy}
 #     return item
 
-from fastapi import FastAPI
-from pydantic import BaseModel
+# from fastapi import FastAPI
+# from pydantic import BaseModel
 
 
-class Item(BaseModel):
-    name: str
-    description: str or None = None
-    price: float
-    tax: float or None = None
+# class Item(BaseModel):
+#     name: str
+#     description: str or None = None
+#     price: float
+#     tax: float or None = None
 
 
-app = FastAPI()
-# @app.get("/items/")
-# async def read_items():
-#     return {"message": "This is a GET endpoint for items."}
+# app = FastAPI()
+# # @app.get("/items/")
+# # async def read_items():
+# #     return {"message": "This is a GET endpoint for items."}
 
-@app.post("/items/")
-async def create_item(item: Item):
-    item.name = item.name.capitalize()
-    item.description = item.description or "This is a description"
-    return item
+# @app.post("/items/")
+# async def create_item(item: Item):
+#     item.name = item.name.capitalize()
+#     item.description = item.description or "This is a description"
+#     return item
